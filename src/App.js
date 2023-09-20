@@ -7,7 +7,7 @@ function App() {
       <div className="wrapper">
         <main className="main">
           <header className="App-header">
-            <p>MY REACT APP</p>
+            <p>My React App</p>
           </header>
           <WeatherSearch />
         </main>
