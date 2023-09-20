@@ -1,12 +1,18 @@
 import React, { useState } from "react";
 import "./weather-search.scss";
 
+const apiKey = process.env.REACT_APP_API_KEY;
+
+async function stall(stallTime = 3000) {
+  await new Promise((resolve) => setTimeout(resolve, stallTime));
+}
+
 function WeatherSearch() {
   const [city, setCity] = useState(""); // Add new state variable for city
   const [language, setLanguage] = useState(""); // Add new state variable for language
   const [date, setDate] = useState(""); // Add new state variable for date
   const [weatherData, setWeatherData] = useState(null); // Add new state variable for weather data
-  const apiKey = process.env.REACT_APP_API_KEY;
+  const [loading, setLoading] = useState(false); // Add loading state
 
   function handleCityChange(event) {
     setCity(event.target.value); // Update city state with selected city
@@ -20,65 +26,84 @@ function WeatherSearch() {
     setLanguage(event.target.value); // Update language state with selected language
   }
 
-  function handleClick(event) {
-    fetch(
-      `http://api.weatherapi.com/v1/future.json?key=${apiKey}&q=${city}&dt=${date}&lang=${language}`
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Network response was not ok (${response.status})`);
-        }
+  async function handleSubmit(event) {
+    event.preventDefault();
+    try {
+      setLoading(true); // Set loading to true when making the API request
 
-        return response.json();
-      })
+      // Simulate a delay of 3 seconds before making the API request
+      await stall(3000);
 
-      .then((data) => {
-        setWeatherData(data); // Update weather data state with API response
-        console.log(data);
-      })
+      const response = await fetch(
+        `http://api.weatherapi.com/v1/future.json?key=${apiKey}&q=${city}&dt=${date}&lang=${language}`
+      );
 
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        // Handle the error here, such as showing an error message to the user
-      });
+      if (!response.ok) {
+        throw new Error(`Network response was not ok (${response.status})`);
+      }
+
+      const data = await response.json();
+      setWeatherData(data); // Update weather data state with API response
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      alert("Error fetching data. Please try again later.");
+    } finally {
+      setLoading(false); // Set loading to false after fetching data
+    }
   }
 
   return (
     <div>
-      <input
-        type="text"
-        placeholder="Enter city name"
-        value={city}
-        onChange={handleCityChange} // Add onChange event handler to update the city state
-      />
+      <form onSubmit={handleSubmit}>
+        <label>
+          City:
+          <input
+            type="text"
+            placeholder="Enter city name"
+            value={city}
+            onChange={handleCityChange} // Add onChange event handler to update the city state
+          />
+        </label>
+        <label>
+          Date:
+          <input
+            type="date"
+            placeholder="Date yyyy/MM/dd"
+            value={date}
+            onChange={handleDateChange} // Add onChange event handler to update the date state
+          />
+        </label>
+        <label>
+          Language:
+          <input
+            placeholder="Language"
+            value={language}
+            onChange={handleLanguageChange} // Add onChange event handler to update the language state
+          />
+        </label>
+        <button type="submit">Search</button>
+        {loading && <p>Loading...</p>}
 
-      <input
-        placeholder="Date yyyy/MM/dd"
-        value={date}
-        onChange={handleDateChange} // Add onChange event handler to update the date state
-      />
+        {weatherData && ( // Render weather data if it exists
+          <div>
+            <h2>{weatherData.location.name}</h2>
+            <p>
+              Max temperature:{" "}
+              {weatherData.forecast.forecastday[0].day.maxtemp_c}
+              °C
+            </p>
+            <p>
+              Min temp: {weatherData.forecast.forecastday[0].day.mintemp_c}°C
+            </p>
 
-      <input
-        placeholder="Language"
-        value={language}
-        onChange={handleLanguageChange} // Add onChange event handler to update the language state
-      />
-      <button onClick={handleClick}>Search</button>
-
-      {weatherData && ( // Render weather data if it exists
-        <div>
-          <h2>{weatherData.location.name}</h2>
-          <p>
-            Max temperature: {weatherData.forecast.forecastday[0].day.maxtemp_c}
-            °C
-          </p>
-          <p>Min temp: {weatherData.forecast.forecastday[0].day.mintemp_c}°C</p>
-
-          <p>
-            Condition: {weatherData.forecast.forecastday[0].day.condition.text}
-          </p>
-        </div>
-      )}
+            <p>
+              Condition:{" "}
+              {weatherData.forecast.forecastday[0].day.condition.text}
+            </p>
+          </div>
+        )}
+      </form>
     </div>
   );
 }
