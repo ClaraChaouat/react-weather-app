@@ -62,7 +62,7 @@ function WeatherSearch() {
             type="text"
             placeholder="Enter city name"
             value={city}
-            onChange={handleCityChange} // Add onChange event handler to update the city state
+            onChange={handleCityChange}
           />
         </label>
         <label>
@@ -71,7 +71,7 @@ function WeatherSearch() {
             type="date"
             placeholder="Date yyyy/MM/dd"
             value={date}
-            onChange={handleDateChange} // Add onChange event handler to update the date state
+            onChange={handleDateChange}
           />
         </label>
         <label>
@@ -79,7 +79,7 @@ function WeatherSearch() {
           <input
             placeholder="Language"
             value={language}
-            onChange={handleLanguageChange} // Add onChange event handler to update the language state
+            onChange={handleLanguageChange}
           />
         </label>
         <button type="submit">Search</button>
