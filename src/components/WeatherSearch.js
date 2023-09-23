@@ -12,7 +12,7 @@ function WeatherSearch() {
   const [language, setLanguage] = useState(""); // Add new state variable for language
   const [date, setDate] = useState(""); // Add new state variable for date
   const [weather, setWeather] = useState(null); // Add new state variable for weather data
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
   const [error, setError] = useState("");
   const [validationError, setValidationError] = useState("");
 
@@ -40,7 +40,7 @@ function WeatherSearch() {
     }
 
     try {
-      setLoading(true); // Set loading to true when making the API request
+      setIsLoading(true); // Set loading to true when making the API request
 
       // Simulate a delay of 3 seconds before making the API request
       await stall(3000);
@@ -60,7 +60,7 @@ function WeatherSearch() {
       console.error("Error fetching data:", error);
       setError(`Error fetching data: ${error.message}`);
     } finally {
-      setLoading(false); // Set loading to false after fetching data
+      setIsLoading(false); // Set loading to false after fetching data
     }
   }
 
@@ -96,7 +96,7 @@ function WeatherSearch() {
           />
         </label>
         <button type="submit">Search</button>
-        {loading && <p>Loading...</p>}
+        {isLoading && <p>Loading...</p>}
 
         {weather && ( // Render weather data if it exists
           <div>
