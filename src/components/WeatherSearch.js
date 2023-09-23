@@ -11,7 +11,7 @@ function WeatherSearch() {
   const [city, setCity] = useState(""); // Add new state variable for city
   const [language, setLanguage] = useState(""); // Add new state variable for language
   const [date, setDate] = useState(""); // Add new state variable for date
-  const [weatherData, setWeatherData] = useState(null); // Add new state variable for weather data
+  const [weather, setWeather] = useState(null); // Add new state variable for weather data
   const [loading, setLoading] = useState(false); // Add loading state
   const [error, setError] = useState("");
   const [validationError, setValidationError] = useState("");
@@ -54,7 +54,7 @@ function WeatherSearch() {
       }
 
       const data = await response.json();
-      setWeatherData(data); // Update weather data state with API response
+      setWeather(data); // Update weather data state with API response
       console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -98,21 +98,17 @@ function WeatherSearch() {
         <button type="submit">Search</button>
         {loading && <p>Loading...</p>}
 
-        {weatherData && ( // Render weather data if it exists
+        {weather && ( // Render weather data if it exists
           <div>
-            <h2>{weatherData.location.name}</h2>
+            <h2>{weather.location.name}</h2>
             <p>
-              Max temperature:{" "}
-              {weatherData.forecast.forecastday[0].day.maxtemp_c}
+              Max temperature: {weather.forecast.forecastday[0].day.maxtemp_c}
               °C
             </p>
-            <p>
-              Min temp: {weatherData.forecast.forecastday[0].day.mintemp_c}°C
-            </p>
+            <p>Min temp: {weather.forecast.forecastday[0].day.mintemp_c}°C</p>
 
             <p>
-              Condition:{" "}
-              {weatherData.forecast.forecastday[0].day.condition.text}
+              Condition: {weather.forecast.forecastday[0].day.condition.text}
             </p>
           </div>
         )}
