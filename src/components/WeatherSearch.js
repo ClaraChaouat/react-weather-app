@@ -14,6 +14,7 @@ function WeatherSearch() {
   const [weatherData, setWeatherData] = useState(null); // Add new state variable for weather data
   const [loading, setLoading] = useState(false); // Add loading state
   const [error, setError] = useState("");
+  const [validationError, setValidationError] = useState("");
 
   function handleCityChange(event) {
     setCity(event.target.value); // Update city state with selected city
@@ -28,8 +29,16 @@ function WeatherSearch() {
   }
 
   async function handleSubmit(event) {
-    setError(""); // Clear any previous error
     event.preventDefault();
+    setError(""); // Clear any previous error
+    setValidationError(""); // Clear any previous validation error
+
+    // Validate inputs on submit
+    if (!city || !date || !language) {
+      setValidationError("City, Date, and Language are mandatory!");
+      return;
+    }
+
     try {
       setLoading(true); // Set loading to true when making the API request
 
@@ -58,7 +67,7 @@ function WeatherSearch() {
   return (
     <div>
       {error && <div className="error">{error}</div>}{" "}
-      {/* Render error message */}
+      {validationError && <div className="error">{validationError}</div>}{" "}
       <form onSubmit={handleSubmit}>
         <label>
           City:
