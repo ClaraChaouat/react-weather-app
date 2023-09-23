@@ -1,4 +1,129 @@
+// import React, { useState } from "react";
+// import "./weather-search.scss";
+
+// const apiKey = process.env.REACT_APP_API_KEY;
+
+// async function stall(stallTime = 3000) {
+//   await new Promise((resolve) => setTimeout(resolve, stallTime));
+// }
+
+// function WeatherSearch() {
+//   const [city, setCity] = useState(""); // Add new state variable for city
+//   const [language, setLanguage] = useState(""); // Add new state variable for language
+//   const [date, setDate] = useState(""); // Add new state variable for date
+//   const [weather, setWeather] = useState(null); // Add new state variable for weather data
+//   const [isLoading, setIsLoading] = useState(false); // Add loading state
+//   const [error, setError] = useState("");
+//   const [validationError, setValidationError] = useState("");
+
+//   function handleCityChange(event) {
+//     setCity(event.target.value); // Update city state with selected city
+//   }
+
+//   function handleDateChange(event) {
+//     setDate(event.target.value); // Update date state with selected date
+//   }
+
+//   function handleLanguageChange(event) {
+//     setLanguage(event.target.value); // Update language state with selected language
+//   }
+
+//   async function handleSubmit(event) {
+//     event.preventDefault();
+//     setError(""); // Clear any previous error
+//     setValidationError(""); // Clear any previous validation error
+
+//     // Validate inputs on submit
+//     if (!city || !date || !language) {
+//       setValidationError("City, Date, and Language are mandatory!");
+//       return;
+//     }
+
+//     try {
+//       setIsLoading(true); // Set loading to true when making the API request
+
+//       // Simulate a delay of 3 seconds before making the API request
+//       await stall(3000);
+
+//       const response = await fetch(
+//         `http://api.weatherapi.com/v1/future.json?key=${apiKey}&q=${city}&dt=${date}&lang=${language}`
+//       );
+
+//       if (!response.ok) {
+//         throw new Error(`Network response was not ok (${response.status})`);
+//       }
+
+//       const data = await response.json();
+//       setWeather(data); // Update weather data state with API response
+//       console.log(data);
+//     } catch (error) {
+//       console.error("Error fetching data:", error);
+//       setError(`Error fetching data: ${error.message}`);
+//     } finally {
+//       setIsLoading(false); // Set loading to false after fetching data
+//     }
+//   }
+
+//   return (
+//     <div>
+//       {error && <div className="error">{error}</div>}{" "}
+//       {validationError && <div className="error">{validationError}</div>}{" "}
+//       <form onSubmit={handleSubmit}>
+//         <label>
+//           City:
+//           <input
+//             type="text"
+//             placeholder="Enter city name"
+//             value={city}
+//             onChange={handleCityChange}
+//           />
+//         </label>
+//         <label>
+//           Date:
+//           <input
+//             type="date"
+//             placeholder="Date yyyy/MM/dd"
+//             value={date}
+//             onChange={handleDateChange}
+//           />
+//         </label>
+//         <label>
+//           Language:
+//           <input
+//             placeholder="Language"
+//             value={language}
+//             onChange={handleLanguageChange}
+//           />
+//         </label>
+//         <button type="submit">Search</button>
+//         {isLoading && <p>Loading...</p>}
+
+//         {weather && ( // Render weather data if it exists
+//           <div>
+//             <h2>{weather.location.name}</h2>
+//             <p>
+//               Max temperature: {weather.forecast.forecastday[0].day.maxtemp_c}
+//               °C
+//             </p>
+//             <p>Min temp: {weather.forecast.forecastday[0].day.mintemp_c}°C</p>
+
+//             <p>
+//               Condition: {weather.forecast.forecastday[0].day.condition.text}
+//             </p>
+//           </div>
+//         )}
+//       </form>
+//     </div>
+//   );
+// }
+
+// export default WeatherSearch;
+
+// WeatherSearch.js
 import React, { useState } from "react";
+import SearchCity from "./SearchCity";
+import SearchDetails from "./SearchDetails";
+import Results from "./Results";
 import "./weather-search.scss";
 
 const apiKey = process.env.REACT_APP_API_KEY;
@@ -69,49 +194,16 @@ function WeatherSearch() {
       {error && <div className="error">{error}</div>}{" "}
       {validationError && <div className="error">{validationError}</div>}{" "}
       <form onSubmit={handleSubmit}>
-        <label>
-          City:
-          <input
-            type="text"
-            placeholder="Enter city name"
-            value={city}
-            onChange={handleCityChange}
-          />
-        </label>
-        <label>
-          Date:
-          <input
-            type="date"
-            placeholder="Date yyyy/MM/dd"
-            value={date}
-            onChange={handleDateChange}
-          />
-        </label>
-        <label>
-          Language:
-          <input
-            placeholder="Language"
-            value={language}
-            onChange={handleLanguageChange}
-          />
-        </label>
+        <SearchCity city={city} onCityChange={handleCityChange} />
+        <SearchDetails
+          date={date}
+          onDateChange={handleDateChange}
+          language={language}
+          onLanguageChange={handleLanguageChange}
+        />
         <button type="submit">Search</button>
         {isLoading && <p>Loading...</p>}
-
-        {weather && ( // Render weather data if it exists
-          <div>
-            <h2>{weather.location.name}</h2>
-            <p>
-              Max temperature: {weather.forecast.forecastday[0].day.maxtemp_c}
-              °C
-            </p>
-            <p>Min temp: {weather.forecast.forecastday[0].day.mintemp_c}°C</p>
-
-            <p>
-              Condition: {weather.forecast.forecastday[0].day.condition.text}
-            </p>
-          </div>
-        )}
+        <Results weather={weather} />
       </form>
     </div>
   );
