@@ -47,7 +47,6 @@ function WeatherSearch() {
       console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error);
-      alert("Error fetching data. Please try again later.");
     } finally {
       setLoading(false); // Set loading to false after fetching data
     }
