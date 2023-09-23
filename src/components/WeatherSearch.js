@@ -13,6 +13,7 @@ function WeatherSearch() {
   const [date, setDate] = useState(""); // Add new state variable for date
   const [weatherData, setWeatherData] = useState(null); // Add new state variable for weather data
   const [loading, setLoading] = useState(false); // Add loading state
+  const [error, setError] = useState("");
 
   function handleCityChange(event) {
     setCity(event.target.value); // Update city state with selected city
@@ -27,6 +28,7 @@ function WeatherSearch() {
   }
 
   async function handleSubmit(event) {
+    setError(""); // Clear any previous error
     event.preventDefault();
     try {
       setLoading(true); // Set loading to true when making the API request
@@ -47,6 +49,7 @@ function WeatherSearch() {
       console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error);
+      setError(`Error fetching data: ${error.message}`);
     } finally {
       setLoading(false); // Set loading to false after fetching data
     }
@@ -54,6 +57,8 @@ function WeatherSearch() {
 
   return (
     <div>
+      {error && <div className="error">{error}</div>}{" "}
+      {/* Render error message */}
       <form onSubmit={handleSubmit}>
         <label>
           City:
